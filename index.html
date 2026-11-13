@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LSPD - Patrol Rifle Certification (PRC) Application</title>
+  <!-- Library untuk mengubah form menjadi gambar PNG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -157,6 +159,13 @@
       border-radius: 4px;
       transition: 0.2s;
     }
+    .btn-img {
+      background-color: #16a34a;
+      color: #fff;
+    }
+    .btn-img:hover {
+      background-color: #15803d;
+    }
     .btn-copy {
       background-color: #0b2239;
       color: #fff;
@@ -166,11 +175,11 @@
       background-color: #163a5f;
     }
     .btn-print {
-      background-color: #16a34a;
+      background-color: #4b5563;
       color: #fff;
     }
     .btn-print:hover {
-      background-color: #15803d;
+      background-color: #374151;
     }
     @media (max-width: 600px) {
       .paper { padding: 25px 18px; }
@@ -186,10 +195,11 @@
 </head>
 <body>
 
-<!-- AREA FORMULIR -->
+<!-- AREA FORMULIR YANG AKAN DI-CAPTURE MENJADI GAMBAR -->
 <div class="paper" id="capture-area">
   <div class="header">
-    <img src="https://i.imgur.com/3fSSqST.png" alt="LSPD Logo" class="lspd-logo">
+    <!-- Logo Custom LSPD Lu -->
+    <img src="https://i.imgur.com/3fSSqST.png" alt="LSPD Logo" class="lspd-logo" crossorigin="anonymous">
     <h1>LOS SANTOS POLICE DEPARTMENT</h1>
     <h2>METROPOLITAN DIVISION / FIREARMS & TACTICS OVERSIGHT</h2>
     <p>PATROL RIFLE CERTIFICATION (PRC) — APPLICATION FORM (FORM PRC-101)</p>
@@ -301,14 +311,49 @@
 
 <!-- TOMBOL AKSI -->
 <div class="actions-bar">
+  <button class="btn-img" id="btn-download" onclick="downloadAsImage()">🖼️ Download Gambar (PNG)</button>
   <button class="btn-copy" onclick="copyToDiscord()">📋 Copy Teks (Discord)</button>
-  <button class="btn-print" onclick="window.print()">🖨️ Simpan PDF / Print Form</button>
+  <button class="btn-print" onclick="window.print()">🖨️ Simpan PDF / Print</button>
 </div>
 
 <script>
   function getRadio(name) {
     const el = document.querySelector(`input[name="${name}"]:checked`);
     return el ? el.value : "Belum diisi";
+  }
+
+  function downloadAsImage() {
+    if (!document.getElementById("agree").checked) {
+      alert("Harap centang pernyataan persetujuan terlebih dahulu sebelum mendownload!");
+      return;
+    }
+
+    const btn = document.getElementById("btn-download");
+    const originalText = btn.innerText;
+    btn.innerText = "⏳ Memproses Gambar...";
+    btn.disabled = true;
+
+    const captureArea = document.getElementById("capture-area");
+    const icName = (document.getElementById("ic_name").value || "Applicant").trim().replace(/\s+/g, "_");
+
+    html2canvas(captureArea, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff"
+    }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = `PRC_Application_${icName}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }).catch(err => {
+      alert("Gagal membuat gambar: " + err);
+      btn.innerText = originalText;
+      btn.disabled = false;
+    });
   }
 
   function copyToDiscord() {
