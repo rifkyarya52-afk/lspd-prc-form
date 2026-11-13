@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LSPD - Patrol Rifle Certification (PRC) Application</title>
+  <!-- Library untuk mengubah form menjadi gambar PNG -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -14,7 +16,8 @@
       margin: 0;
       padding: 20px 10px;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
+      align-items: center;
     }
     .paper {
       background: #ffffff;
@@ -31,7 +34,7 @@
       padding-bottom: 15px;
       margin-bottom: 20px;
     }
-    .header img {
+    .lspd-logo {
       width: 75px;
       height: auto;
       margin-bottom: 8px;
@@ -85,7 +88,6 @@
     }
     .field input[type="text"],
     .field input[type="date"],
-    .field select,
     .field textarea {
       width: 100%;
       border: none;
@@ -135,24 +137,39 @@
       line-height: 1.5;
       margin-top: 10px;
     }
-    .actions {
-      margin-top: 25px;
+    .actions-bar {
+      width: 100%;
+      max-width: 820px;
+      background: #282d37;
+      padding: 16px 20px;
+      margin-top: 15px;
+      border-radius: 6px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      justify-content: center;
     }
     button {
       font-family: Arial, Helvetica, sans-serif;
       font-size: 13px;
       font-weight: bold;
-      padding: 10px 18px;
+      padding: 11px 18px;
       border: none;
       cursor: pointer;
-      border-radius: 3px;
+      border-radius: 4px;
+      transition: 0.2s;
+    }
+    .btn-img {
+      background-color: #16a34a;
+      color: #fff;
+    }
+    .btn-img:hover {
+      background-color: #15803d;
     }
     .btn-copy {
       background-color: #0b2239;
       color: #fff;
+      border: 1px solid #3b5998;
     }
     .btn-copy:hover {
       background-color: #163a5f;
@@ -167,20 +184,22 @@
     @media (max-width: 600px) {
       .paper { padding: 25px 18px; }
       .grid-2 { grid-template-columns: 1fr; }
+      button { width: 100%; }
     }
     @media print {
       body { background: #fff; padding: 0; }
       .paper { box-shadow: none; border: none; padding: 10px; }
-      .actions { display: none; }
+      .actions-bar { display: none; }
     }
   </style>
 </head>
 <body>
 
-<div class="paper">
+<!-- AREA FORMULIR YANG AKAN DI-CAPTURE MENJADI GAMBAR -->
+<div class="paper" id="capture-area">
   <div class="header">
-    <!-- Ganti src di bawah dengan link logo LSPD server kamu jika perlu -->
-    <img src="https://i.imgur.com/3fSSqST.png" alt="LSPD Seal">
+    <!-- Logo Custom LSPD Lu -->
+    <img src="https://i.imgur.com/3fSSqST.png" alt="LSPD Logo" class="lspd-logo" crossorigin="anonymous">
     <h1>LOS SANTOS POLICE DEPARTMENT</h1>
     <h2>METROPOLITAN DIVISION / FIREARMS & TACTICS OVERSIGHT</h2>
     <p>PATROL RIFLE CERTIFICATION (PRC) — APPLICATION FORM (FORM PRC-101)</p>
@@ -288,17 +307,53 @@
       <input type="text" id="signature" placeholder="Ketik Nama Lengkap Anda sebagai tanda tangan">
     </div>
   </div>
+</div>
 
-  <div class="actions">
-    <button class="btn-copy" onclick="copyToDiscord()">📋 Copy Hasil Form (Untuk Discord)</button>
-    <button class="btn-print" onclick="window.print()">🖨️ Simpan PDF / Print</button>
-  </div>
+<!-- TOMBOL AKSI -->
+<div class="actions-bar">
+  <button class="btn-img" id="btn-download" onclick="downloadAsImage()">🖼️ Download Gambar (PNG)</button>
+  <button class="btn-copy" onclick="copyToDiscord()">📋 Copy Teks (Discord)</button>
+  <button class="btn-print" onclick="window.print()">🖨️ Simpan PDF / Print</button>
 </div>
 
 <script>
   function getRadio(name) {
     const el = document.querySelector(`input[name="${name}"]:checked`);
     return el ? el.value : "Belum diisi";
+  }
+
+  function downloadAsImage() {
+    if (!document.getElementById("agree").checked) {
+      alert("Harap centang pernyataan persetujuan terlebih dahulu sebelum mendownload!");
+      return;
+    }
+
+    const btn = document.getElementById("btn-download");
+    const originalText = btn.innerText;
+    btn.innerText = "⏳ Memproses Gambar...";
+    btn.disabled = true;
+
+    const captureArea = document.getElementById("capture-area");
+    const icName = (document.getElementById("ic_name").value || "Applicant").trim().replace(/\s+/g, "_");
+
+    html2canvas(captureArea, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: "#ffffff"
+    }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = `PRC_Application_${icName}.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }).catch(err => {
+      alert("Gagal membuat gambar: " + err);
+      btn.innerText = originalText;
+      btn.disabled = false;
+    });
   }
 
   function copyToDiscord() {
@@ -333,7 +388,7 @@
 **Tanda Tangan Elektronik:** *${document.getElementById("signature").value || "-"}*`;
 
     navigator.clipboard.writeText(text).then(() => {
-      alert("Data formulir berhasil disalin! Silakan paste (Ctrl+V) di channel Discord.");
+      alert("Data formulir berhasil disalin! Silakan paste di channel Discord.");
     });
   }
 </script>
