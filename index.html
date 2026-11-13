@@ -4,8 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LSPD - Patrol Rifle Certification (PRC) Application</title>
-  <!-- Library untuk mengubah form menjadi gambar PNG -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -159,13 +157,6 @@
       border-radius: 4px;
       transition: 0.2s;
     }
-    .btn-img {
-      background-color: #16a34a;
-      color: #fff;
-    }
-    .btn-img:hover {
-      background-color: #15803d;
-    }
     .btn-copy {
       background-color: #0b2239;
       color: #fff;
@@ -175,11 +166,11 @@
       background-color: #163a5f;
     }
     .btn-print {
-      background-color: #4b5563;
+      background-color: #16a34a;
       color: #fff;
     }
     .btn-print:hover {
-      background-color: #374151;
+      background-color: #15803d;
     }
     @media (max-width: 600px) {
       .paper { padding: 25px 18px; }
@@ -189,5 +180,173 @@
     @media print {
       body { background: #fff; padding: 0; }
       .paper { box-shadow: none; border: none; padding: 10px; }
-      .
-      
+      .actions-bar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- AREA FORMULIR -->
+<div class="paper" id="capture-area">
+  <div class="header">
+    <img src="https://i.imgur.com/3fSSqST.png" alt="LSPD Logo" class="lspd-logo">
+    <h1>LOS SANTOS POLICE DEPARTMENT</h1>
+    <h2>METROPOLITAN DIVISION / FIREARMS & TACTICS OVERSIGHT</h2>
+    <p>PATROL RIFLE CERTIFICATION (PRC) — APPLICATION FORM (FORM PRC-101)</p>
+  </div>
+
+  <!-- SECTION A -->
+  <div class="section-title">I. PERSONNEL INFORMATION (IN-CHARACTER)</div>
+  <div class="grid-2">
+    <div class="field">
+      <label>Full Name (Nama Lengkap)</label>
+      <input type="text" id="ic_name" placeholder="Contoh: Dwayne Tyler">
+    </div>
+    <div class="field">
+      <label>Rank & Division</label>
+      <input type="text" id="rank" value="Police Officer III / Patrol Division">
+    </div>
+    <div class="field">
+      <label>Badge Number (#)</label>
+      <input type="text" id="badge" placeholder="Contoh: #25770">
+    </div>
+    <div class="field">
+      <label>Date of Application</label>
+      <input type="date" id="app_date">
+    </div>
+    <div class="field">
+      <label>Phone Number / Callsign</label>
+      <input type="text" id="phone" placeholder="Contoh: 555-0192 / 1-ADAM-12">
+    </div>
+    <div class="field">
+      <label>Endorsing Supervisor / FTO</label>
+      <input type="text" id="supervisor" placeholder="Contoh: Sergeant John Doe">
+    </div>
+  </div>
+
+  <!-- SECTION B -->
+  <div class="section-title">II. ELIGIBILITY & DISCIPLINARY CHECKLIST</div>
+  <table class="checklist-table">
+    <thead>
+      <tr>
+        <th>REQUIREMENT CRITERIA</th>
+        <th class="center">YES</th>
+        <th class="center">NO</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1. Apakah Anda berpangkat minimal <strong>Police Officer III</strong>?</td>
+        <td class="center"><input type="radio" name="q_rank" value="Ya"></td>
+        <td class="center"><input type="radio" name="q_rank" value="Tidak"></td>
+      </tr>
+      <tr>
+        <td>2. Apakah Anda bersih dari <strong>Infraction Point</strong> aktif (0 Point)?</td>
+        <td class="center"><input type="radio" name="q_ip" value="Ya (0 IP)"></td>
+        <td class="center"><input type="radio" name="q_ip" value="Tidak"></td>
+      </tr>
+      <tr>
+        <td>3. Apakah Anda bebas dari sanksi <strong>Suspensi</strong> selama <strong>2 minggu (14 hari)</strong> terakhir?</td>
+        <td class="center"><input type="radio" name="q_susp" value="Ya (Bebas Suspensi)"></td>
+        <td class="center"><input type="radio" name="q_susp" value="Tidak"></td>
+      </tr>
+      <tr>
+        <td>4. Apakah Anda memiliki <strong>Weapon License</strong> yang masih aktif?</td>
+        <td class="center"><input type="radio" name="q_lic" value="Ya"></td>
+        <td class="center"><input type="radio" name="q_lic" value="Tidak"></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="field" style="margin-top: 14px;">
+    <label>Statement of Purpose (Alasan Mengajukan Sertifikasi PRC)</label>
+    <textarea id="reason" placeholder="Jelaskan secara singkat kesiapan taktis dan pemahaman Anda mengenai Use of Force..."></textarea>
+  </div>
+
+  <!-- SECTION C -->
+  <div class="section-title">III. OUT-OF-CHARACTER (OOC) INFORMATION</div>
+  <div class="grid-2">
+    <div class="field">
+      <label>UCP / Forum Username</label>
+      <input type="text" id="ucp" placeholder="Username UCP">
+    </div>
+    <div class="field">
+      <label>Discord Tag</label>
+      <input type="text" id="discord" placeholder="Contoh: username#0000">
+    </div>
+    <div class="field">
+      <label>Available Time for Practical Exam (WIB)</label>
+      <input type="text" id="schedule" placeholder="Contoh: Senin-Jumat, 19.00 - 22.00 WIB">
+    </div>
+    <div class="field">
+      <label>Link Screenshot /stats & /licenses</label>
+      <input type="text" id="ss_link" placeholder="https://imgur.com/...">
+    </div>
+  </div>
+
+  <!-- SECTION D -->
+  <div class="section-title">IV. CERTIFICATION & DIGITAL SIGNATURE</div>
+  <div class="agreement-box">
+    <label style="cursor:pointer;">
+      <input type="checkbox" id="agree"> Saya menyatakan bahwa seluruh informasi di atas adalah benar. Apabila ditemukan pemalsuan data terkait rekam jejak disiplin (<em>Infraction Point</em> maupun riwayat suspensi), saya bersedia menerima sanksi dari Internal Affairs Division (IAD) dan mematuhi seluruh SOP penggunaan Patrol Rifle.
+    </label>
+  </div>
+  <div class="grid-2" style="margin-top: 12px;">
+    <div class="field">
+      <label>Applicant Digital Signature (Nama Lengkap IC)</label>
+      <input type="text" id="signature" placeholder="Ketik Nama Lengkap Anda sebagai tanda tangan">
+    </div>
+  </div>
+</div>
+
+<!-- TOMBOL AKSI -->
+<div class="actions-bar">
+  <button class="btn-copy" onclick="copyToDiscord()">📋 Copy Teks (Discord)</button>
+  <button class="btn-print" onclick="window.print()">🖨️ Simpan PDF / Print Form</button>
+</div>
+
+<script>
+  function getRadio(name) {
+    const el = document.querySelector(`input[name="${name}"]:checked`);
+    return el ? el.value : "Belum diisi";
+  }
+
+  function copyToDiscord() {
+    if (!document.getElementById("agree").checked) {
+      alert("Harap centang pernyataan persetujuan terlebih dahulu!");
+      return;
+    }
+
+    const text = `**PATROL RIFLE CERTIFICATION (PRC) — APPLICATION FORM**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**[A. PERSONNEL INFORMATION]**
+* **Nama Lengkap:** ${document.getElementById("ic_name").value || "-"}
+* **Pangkat & Divisi:** ${document.getElementById("rank").value || "-"}
+* **Badge #:** ${document.getElementById("badge").value || "-"}
+* **Tanggal Pengajuan:** ${document.getElementById("app_date").value || "-"}
+* **No. Telp / Callsign:** ${document.getElementById("phone").value || "-"}
+* **Supervisor / FTO:** ${document.getElementById("supervisor").value || "-"}
+
+**[B. ELIGIBILITY CHECKLIST]**
+* **Minimal PO-III:** ${getRadio("q_rank")}
+* **0 Infraction Point:** ${getRadio("q_ip")}
+* **Bebas Suspensi 14 Hari:** ${getRadio("q_susp")}
+* **Weapon License Aktif:** ${getRadio("q_lic")}
+* **Alasan Pengajuan:** ${document.getElementById("reason").value || "-"}
+
+**[C. OOC INFORMATION]**
+* **UCP / Forum:** ${document.getElementById("ucp").value || "-"}
+* **Discord:** ${document.getElementById("discord").value || "-"}
+* **Jadwal Ujian (WIB):** ${document.getElementById("schedule").value || "-"}
+* **Bukti /stats & /licenses:** ${document.getElementById("ss_link").value || "-"}
+
+**Tanda Tangan Elektronik:** *${document.getElementById("signature").value || "-"}*`;
+
+    navigator.clipboard.writeText(text).then(() => {
+      alert("Data formulir berhasil disalin! Silakan paste di channel Discord.");
+    });
+  }
+</script>
+
+</body>
+</html>
